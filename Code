@@ -1,0 +1,76 @@
+def display_menu():
+    menu = {
+        1: ("Aloo Tikki", 5),
+        2: ("Maharaja", 10),
+        3: ("Mac Special", 15)
+    }
+    print("Menu:")
+    for key, value in menu.items():
+        print(f"{key}. {value[0]} \t {value[1]}$")
+    return menu
+
+def calculate_bill(order, quantity, is_student, delivery, tip):
+    price = order[1] * quantity
+    discount = 0
+    delivery_charge = 0
+
+    if is_student:
+        discount = 0.2 * price
+
+    if delivery:
+        delivery_charge = 0.05 * price
+
+    total = price - discount + delivery_charge + tip
+    return price, discount, delivery_charge, total
+
+def print_bill(order, quantity, price, discount, delivery_charge, tip, total):
+    print("\n****************** FINAL BILL ***********************")
+    print(f"sr.\tname\t\tprice\tquantity\ttotal_price")
+    print(f"1.\t{order[0]}\t{order[1]}$\t{quantity}\t\t{price}$")
+    print("------------------------------------------")
+    print(f"\t\t\t\t\t{price}$")
+    if discount > 0:
+        print(f"student discount 20%\t\t-{discount}$")
+    if delivery_charge > 0:
+        print(f"delivery charge 5%\t\t+{delivery_charge}$")
+    if tip > 0:
+        print(f"tip\t\t\t\t{tip}$")
+    print("---------------------------------------")
+    print(f"total bill\t\t\t{total}$")
+    print("Thank you and come again >>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+
+def take_order(menu):
+    while True:
+        try:
+            order_num = int(input("Enter the menu number of the burger you want to order: "))
+            if order_num in menu:
+                break
+            else:
+                print("Invalid selection. Please choose a valid menu number.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+    order = menu[order_num]
+    quantity = int(input(f"How many {order[0]} would you like to order? "))
+    is_student = input("Are you a student? (yes/no): ").lower() == 'yes'
+    delivery = input("Do you want delivery? (yes/no): ").lower() == 'yes'
+    tip = int(input("Do you want to give a tip? If yes, enter amount (2, 5, 10), else enter 0: "))
+    return order, quantity, is_student, delivery, tip
+
+def main():
+    menu = display_menu()
+    orders = []
+    while True:
+        order, quantity, is_student, delivery, tip = take_order(menu)
+        price, discount, delivery_charge, total = calculate_bill(order, quantity, is_student, delivery, tip)
+        orders.append((order, quantity, price, discount, delivery_charge, tip, total))
+        
+        another_order = input("Would you like to order another burger? (yes/no): ").lower() == 'yes'
+        if not another_order:
+            break
+    
+    for i, (order, quantity, price, discount, delivery_charge, tip, total) in enumerate(orders, 1):
+        print(f"\nOrder {i}:")
+        print_bill(order, quantity, price, discount, delivery_charge, tip, total)
+
+if __name__ == "__main__":
+    main()
